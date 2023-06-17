@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
-    <height>331</height>
+    <width>360</width>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,25 +15,22 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="image"/>
-      </item>
       <item>
        <layout class="QHBoxLayout" name="radioNavigatorLayout"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="navButtonsLayout">
         <item>
-         <widget class="QPushButton" name="backwardButton">
+         <widget class="QPushButton" name="buttonBackward">
           <property name="text">
            <string>Previous</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="forwardButton">
+         <widget class="QPushButton" name="buttonForward">
           <property name="text">
            <string>Next</string>
           </property>
@@ -43,6 +40,28 @@
       </item>
      </layout>
     </item>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabImage">
+       <attribute name="title">
+        <string>Image</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelImage"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabMetadata">
+       <attribute name="title">
+        <string>Metadata</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -50,7 +69,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>370</width>
+     <width>360</width>
      <height>18</height>
     </rect>
    </property>
