@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
 
 from components import AboutDialog
 from model import ImagesList
@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
     ):
         super().__init__()
         self.imgMarginRight = 40
-        self.imgMarginBottom = 105
+        self._imgMarginBottom = 105
         self.maxImgInitialSize = maxImgInitialSize
 
         self._aspectRatio = None
@@ -36,10 +36,22 @@ class MainWindow(QMainWindow):
 
         self.ui.buttonForward.hide()
         self.ui.buttonBackward.hide()
+        self.ui.buttonForward.clicked.connect(self._images.next)
+        self.ui.buttonBackward.clicked.connect(self._images.prev)
 
         self.ui.statusbar.showMessage("No image opened")
 
         self.resized.connect(self.onResize)
+    
+    @property
+    def imgMarginBottom(self):
+        if len(self._images) > 1:
+            return self._imgMarginBottom + self.ui.navButtonsLayout.sizeHint().height() + 4
+        return self._imgMarginBottom
+
+    @imgMarginBottom.setter
+    def imgMarginBottom(self, value):
+        self._imgMarginBottom = value
 
     def resizeEvent(self, event):
         self.resized.emit(self.size())
@@ -48,7 +60,7 @@ class MainWindow(QMainWindow):
     def onResize(self, newSize: QSize):
         if self._aspectRatio is not None:
             w, h = newSize.width(), newSize.height()
-            
+
             # resize image with window maintaining aspect ratio
             newImgHeight = int((h-self.imgMarginBottom)*self._aspectRatio)
             newImgWidth = int((w-self.imgMarginRight)/self._aspectRatio)
@@ -74,10 +86,14 @@ class MainWindow(QMainWindow):
             self._images.addImage(QPixmap(file))
 
     def showImage(self, idx: int):
+        if len(self._images) > 1:
+            self.ui.buttonForward.show()
+            self.ui.buttonBackward.show()
+
         image = self._images.getImage(idx)
         w, h = image.width(), image.height()
         self._aspectRatio = w / h
-        
+
         # resize image to maxImgInitialSize
         if w >= h and w > self.maxImgInitialSize:
             self.ui.labelImage.resize(self.maxImgInitialSize, int(
@@ -91,5 +107,6 @@ class MainWindow(QMainWindow):
         self.ui.labelImage.setPixmap(image)
         self.resize(self.ui.labelImage.width()+self.imgMarginRight,
                     self.ui.labelImage.height()+self.imgMarginBottom)
-        
+
         self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)}")
+    
