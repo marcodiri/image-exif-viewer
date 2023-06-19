@@ -2,7 +2,7 @@ from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
 
-from components import AboutDialog
+from components import AboutDialog, DetailsDialog
 from model import Image, ImageList
 
 from .designer.Ui_MainWindow import Ui_MainWindow
@@ -15,6 +15,7 @@ class MainWindow(QMainWindow):
         self,
         images: ImageList,
         aboutDialog: AboutDialog,
+        detailsDialog: DetailsDialog,
         maxImgInitialSize: int = 512
     ):
         super().__init__()
@@ -32,6 +33,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.ui.actionAbout.triggered.connect(aboutDialog.exec_)
+        self.ui.actionDetails.triggered.connect(detailsDialog.exec_)
         self.ui.actionQuit.triggered.connect(QApplication.exit)
         self.ui.actionOpen.triggered.connect(self.getImageFiles)
 
@@ -82,7 +84,7 @@ class MainWindow(QMainWindow):
 
     def getImageFiles(self):
         fileNames, _ = QFileDialog.getOpenFileNames(
-            self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.gif)")
+            self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.tiff *.webp)")
         for file in fileNames:
             self._images.addImage(Image(file))
     
