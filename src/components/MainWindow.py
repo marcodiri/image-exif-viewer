@@ -1,5 +1,4 @@
-from PyQt5.QtCore import QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QSize, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
 
 from components import AboutDialog, DetailsDialog
@@ -99,7 +98,7 @@ class MainWindow(QMainWindow):
             self.ui.buttonBackward.show()
 
     def showImage(self, idx: int):
-        pixmap = QPixmap(self._images.getImage(idx).path)
+        pixmap = self._images.getImage(idx).pixmap
         w, h = pixmap.width(), pixmap.height()
         self._aspectRatio = w / h
 

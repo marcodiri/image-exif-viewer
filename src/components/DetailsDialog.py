@@ -13,7 +13,6 @@ class DetailsDialog(QDialog):
         self.ui.setupUi(self)
         
         self.ui.tableWidget.verticalHeader().setDefaultSectionSize(5)
-        
 
     def addCategory(self, value):
         rowCount = self.ui.tableWidget.rowCount()
@@ -28,13 +27,14 @@ class DetailsDialog(QDialog):
         self.ui.tableWidget.setItem(rowCount, 0, value)
         self.ui.tableWidget.setItem(rowCount, 1, empty)
 
-    def addDetail(self, key, value):
+    def addDetail(self, key, val):
         rowCount = self.ui.tableWidget.rowCount()
         self.ui.tableWidget.setRowCount(rowCount+1)
         tag = QTableWidgetItem(" "*4+str(key))
-        tag.setToolTip(key)
+        tag.setToolTip(str(key))
         tag.setFlags(tag.flags() & ~Qt.ItemIsEditable)
-        value = QTableWidgetItem(str(value))
+        value = QTableWidgetItem(str(val))
+        value.setToolTip(str(val))
         value.setFlags(value.flags() & ~Qt.ItemIsEditable)
         self.ui.tableWidget.setItem(rowCount, 0, tag)
         self.ui.tableWidget.setItem(rowCount, 1, value)
@@ -66,3 +66,4 @@ class DetailsDialog(QDialog):
 
     def clearDetails(self):
         self.ui.tableWidget.clearContents()
+        self.ui.tableWidget.setRowCount(0)
