@@ -18,14 +18,15 @@ class MainWindow(QMainWindow):
         maxImgInitialSize: int = 512
     ):
         super().__init__()
-        self.imgMarginRight = 40
-        self._imgMarginBottom = 105
+        self.imgMarginRight = 20
+        self._imgMarginBottom = 60
         self.maxImgInitialSize = maxImgInitialSize
 
         self._aspectRatio = None
 
         self._images = images
         self._images.idxChanged.connect(self.showImage)
+        self._images.imagesChanged.connect(self.updateUi)
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -84,12 +85,15 @@ class MainWindow(QMainWindow):
             self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.gif)")
         for file in fileNames:
             self._images.addImage(Image(file))
-
-    def showImage(self, idx: int):
-        if len(self._images) > 1:
+    
+    def updateUi(self, numImages: int):
+        if numImages > 0:
+            self.ui.menuImage.setEnabled(True)
+        if numImages > 1:
             self.ui.buttonForward.show()
             self.ui.buttonBackward.show()
 
+    def showImage(self, idx: int):
         pixmap = QPixmap(self._images.getImage(idx).path)
         w, h = pixmap.width(), pixmap.height()
         self._aspectRatio = w / h
