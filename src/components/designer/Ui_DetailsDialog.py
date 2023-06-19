@@ -48,6 +48,7 @@ class Ui_DetailsDialog(object):
         self.tableWidget.setHorizontalHeaderItem(1, item)
         self.tableWidget.horizontalHeader().setVisible(True)
         self.tableWidget.horizontalHeader().setCascadingSectionResizes(False)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(150)
         self.tableWidget.horizontalHeader().setSortIndicatorShown(False)
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.verticalHeader().setVisible(False)

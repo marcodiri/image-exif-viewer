@@ -19,6 +19,9 @@ class MainWindow(QMainWindow):
         maxImgInitialSize: int = 512
     ):
         super().__init__()
+        self._aboutDialog = aboutDialog
+        self._detailsDialog = detailsDialog
+        
         self.imgMarginRight = 20
         self._imgMarginBottom = 60
         self.maxImgInitialSize = maxImgInitialSize
@@ -33,7 +36,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.ui.actionAbout.triggered.connect(aboutDialog.exec_)
-        self.ui.actionDetails.triggered.connect(detailsDialog.exec_)
+        self.ui.actionDetails.triggered.connect(self.showImageDetails)
         self.ui.actionQuit.triggered.connect(QApplication.exit)
         self.ui.actionOpen.triggered.connect(self.getImageFiles)
 
@@ -113,6 +116,12 @@ class MainWindow(QMainWindow):
         self.ui.labelImage.setPixmap(pixmap)
         self.resize(self.ui.labelImage.width()+self.imgMarginRight,
                     self.ui.labelImage.height()+self.imgMarginBottom)
-
+        
         self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)} - {self._images.getImage(idx).path}")
+    
+    def showImageDetails(self):
+        currentIdx = self._images.currentIdx
+        self._detailsDialog.setDetails(self._images.getImage(currentIdx).metadata)
+        
+        self._detailsDialog.exec_()
     
