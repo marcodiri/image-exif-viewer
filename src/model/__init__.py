@@ -1,1 +1,2 @@
-from .ImagesList import ImagesList
+from .Image import Image
+from .ImageList import ImageList

@@ -1,11 +1,12 @@
 from typing import List
 
 from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5.QtGui import QPixmap
+
+from model import Image
 
 
-class ImagesList(QObject):
-    _images: List[QPixmap] = []
+class ImageList(QObject):
+    _images: List[Image] = []
     _idx: int = -1
 
     imagesChanged = pyqtSignal(int)
@@ -34,17 +35,17 @@ class ImagesList(QObject):
             idx (int): index of the image in the list.
 
         Returns:
-            QPixmap: image at idx.
+            Image: image at idx.
         """
         if idx > len(self)-1 or idx < 0:
             raise ValueError("Index is out of range")
         return self._images[idx]
 
-    def addImage(self, img: QPixmap):
+    def addImage(self, img: Image):
         """Add an image to the list.
 
         Args:
-            img (QPixmap): QPixmap containing the image.
+            img (Image)
         """
         self._images.append(img)
         self.currentIdx = len(self)-1

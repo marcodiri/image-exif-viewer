@@ -1,9 +1,8 @@
-from PyQt5.QtCore import QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QSize, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
 
-from components import AboutDialog
-from model import ImagesList
+from components import AboutDialog, DetailsDialog
+from model import Image, ImageList
 
 from .designer.Ui_MainWindow import Ui_MainWindow
 
@@ -13,24 +12,30 @@ class MainWindow(QMainWindow):
 
     def __init__(
         self,
-        images: ImagesList,
+        images: ImageList,
         aboutDialog: AboutDialog,
+        detailsDialog: DetailsDialog,
         maxImgInitialSize: int = 512
     ):
         super().__init__()
-        self.imgMarginRight = 40
-        self._imgMarginBottom = 105
+        self._aboutDialog = aboutDialog
+        self._detailsDialog = detailsDialog
+        
+        self.imgMarginRight = 20
+        self._imgMarginBottom = 60
         self.maxImgInitialSize = maxImgInitialSize
 
         self._aspectRatio = None
 
         self._images = images
         self._images.idxChanged.connect(self.showImage)
+        self._images.imagesChanged.connect(self.updateUi)
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.ui.actionAbout.triggered.connect(aboutDialog.exec_)
+        self.ui.actionDetails.triggered.connect(self.showImageDetails)
         self.ui.actionQuit.triggered.connect(QApplication.exit)
         self.ui.actionOpen.triggered.connect(self.getImageFiles)
 
@@ -81,17 +86,20 @@ class MainWindow(QMainWindow):
 
     def getImageFiles(self):
         fileNames, _ = QFileDialog.getOpenFileNames(
-            self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.gif)")
+            self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.tiff *.webp)")
         for file in fileNames:
-            self._images.addImage(QPixmap(file))
-
-    def showImage(self, idx: int):
-        if len(self._images) > 1:
+            self._images.addImage(Image(file))
+    
+    def updateUi(self, numImages: int):
+        if numImages > 0:
+            self.ui.menuImage.setEnabled(True)
+        if numImages > 1:
             self.ui.buttonForward.show()
             self.ui.buttonBackward.show()
 
-        image = self._images.getImage(idx)
-        w, h = image.width(), image.height()
+    def showImage(self, idx: int):
+        pixmap = self._images.getImage(idx).pixmap
+        w, h = pixmap.width(), pixmap.height()
         self._aspectRatio = w / h
 
         # resize image to maxImgInitialSize
@@ -102,11 +110,17 @@ class MainWindow(QMainWindow):
             self.ui.labelImage.resize(
                 int(self.maxImgInitialSize*self._aspectRatio), self.maxImgInitialSize)
         else:
-            self.ui.labelImage.resize(image.size())
+            self.ui.labelImage.resize(pixmap.size())
 
-        self.ui.labelImage.setPixmap(image)
+        self.ui.labelImage.setPixmap(pixmap)
         self.resize(self.ui.labelImage.width()+self.imgMarginRight,
                     self.ui.labelImage.height()+self.imgMarginBottom)
-
-        self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)}")
+        
+        self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)} - {self._images.getImage(idx).path}")
+    
+    def showImageDetails(self):
+        currentIdx = self._images.currentIdx
+        self._detailsDialog.setDetails(self._images.getImage(currentIdx).metadata)
+        
+        self._detailsDialog.exec_()
     

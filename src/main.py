@@ -2,8 +2,8 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from components import AboutDialog, MainWindow
-from model import ImagesList
+from components import AboutDialog, DetailsDialog, MainWindow
+from model import ImageList
 
 
 class ImageViewerApp(QApplication):
@@ -13,8 +13,9 @@ class ImageViewerApp(QApplication):
 
 if __name__ == '__main__':
     app = ImageViewerApp(sys.argv)
-    images = ImagesList()
+    images = ImageList()
     aboutDialog = AboutDialog()
-    window = MainWindow(images, aboutDialog)
+    detailsDialog = DetailsDialog()
+    window = MainWindow(images, aboutDialog, detailsDialog)
     window.show()
     app.exec()
