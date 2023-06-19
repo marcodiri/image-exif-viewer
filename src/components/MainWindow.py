@@ -108,5 +108,5 @@ class MainWindow(QMainWindow):
         self.resize(self.ui.labelImage.width()+self.imgMarginRight,
                     self.ui.labelImage.height()+self.imgMarginBottom)
 
-        self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)}")
+        self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)} - {self._images.getImage(idx).path}")
     
