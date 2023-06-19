@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
 
 from components import AboutDialog
-from model import ImagesList
+from model import Image, ImageList
 
 from .designer.Ui_MainWindow import Ui_MainWindow
 
@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
 
     def __init__(
         self,
-        images: ImagesList,
+        images: ImageList,
         aboutDialog: AboutDialog,
         maxImgInitialSize: int = 512
     ):
@@ -83,15 +83,15 @@ class MainWindow(QMainWindow):
         fileNames, _ = QFileDialog.getOpenFileNames(
             self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.gif)")
         for file in fileNames:
-            self._images.addImage(QPixmap(file))
+            self._images.addImage(Image(file))
 
     def showImage(self, idx: int):
         if len(self._images) > 1:
             self.ui.buttonForward.show()
             self.ui.buttonBackward.show()
 
-        image = self._images.getImage(idx)
-        w, h = image.width(), image.height()
+        pixmap = QPixmap(self._images.getImage(idx).path)
+        w, h = pixmap.width(), pixmap.height()
         self._aspectRatio = w / h
 
         # resize image to maxImgInitialSize
@@ -102,9 +102,9 @@ class MainWindow(QMainWindow):
             self.ui.labelImage.resize(
                 int(self.maxImgInitialSize*self._aspectRatio), self.maxImgInitialSize)
         else:
-            self.ui.labelImage.resize(image.size())
+            self.ui.labelImage.resize(pixmap.size())
 
-        self.ui.labelImage.setPixmap(image)
+        self.ui.labelImage.setPixmap(pixmap)
         self.resize(self.ui.labelImage.width()+self.imgMarginRight,
                     self.ui.labelImage.height()+self.imgMarginBottom)
 
