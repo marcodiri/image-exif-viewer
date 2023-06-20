@@ -40,7 +40,8 @@ class MainWindow(QMainWindow):
         self.ui.actionQuit.triggered.connect(QApplication.exit)
         self.ui.actionOpen.triggered.connect(self.getImageFiles)
         self.ui.actionRotate_90.triggered.connect(lambda: self.rotateImage(90))
-        self.ui.actionRotate_m90.triggered.connect(lambda: self.rotateImage(-90))
+        self.ui.actionRotate_m90.triggered.connect(
+            lambda: self.rotateImage(-90))
         self.resized.connect(self.onResize)
 
         # command shortcuts
@@ -80,13 +81,19 @@ class MainWindow(QMainWindow):
                     self.ui.labelImage.resize(
                         newImgHeight, h-self.imgMarginBottom)
 
+    def addImage(self, path: str):
+        extension = path.split(".")[-1]
+        if extension not in ["jpg", "jpeg", "png", "tiff", "webp"]:
+            raise ValueError("File type not supported")
+        self._images.addImage(Image(path))
+
     def getImageFiles(self):
         fileNames, _ = QFileDialog.getOpenFileNames(
             self, 'Open Images', r"",
             "Image files (*.jpg *.jpeg *.png *.tiff *.webp)"
         )
         for file in fileNames:
-            self._images.addImage(Image(file))
+            self.addImage(file)
 
     def updateUi(self, numImages: int):
         if numImages > 0:
