@@ -17,5 +17,10 @@ if __name__ == '__main__':
     aboutDialog = AboutDialog()
     detailsDialog = DetailsDialog()
     window = MainWindow(images, aboutDialog, detailsDialog)
+    if __file__ in sys.argv:
+        sys.argv.remove(__file__)
+        if len(sys.argv) > 0:
+            for arg in sys.argv:
+                window.addImage(arg)
     window.show()
     app.exec()
