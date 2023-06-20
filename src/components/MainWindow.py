@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         self._detailsDialog = detailsDialog
 
         self.imgMarginRight = 20
-        self._imgMarginBottom = 60
+        self.imgMarginBottom = 60
         self.maxImgInitialSize = maxImgInitialSize
 
         self._aspectRatio = None
@@ -53,17 +53,6 @@ class MainWindow(QMainWindow):
             self._images.prev)
 
         self.ui.statusbar.showMessage("No image opened")
-
-    @property
-    def imgMarginBottom(self):
-        if len(self._images) > 1:
-            return self._imgMarginBottom + \
-                self.ui.navButtonsLayout.sizeHint().height() + 4
-        return self._imgMarginBottom
-
-    @imgMarginBottom.setter
-    def imgMarginBottom(self, value):
-        self._imgMarginBottom = value
 
     def resizeEvent(self, event):
         self.resized.emit(self.size())
