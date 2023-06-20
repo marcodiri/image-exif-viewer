@@ -60,9 +60,9 @@ class ImageList(QObject):
         """Advance to next image or loops to first
         if currently on the last image.
         """
-        currentIdx = self.currentIdx
-        if currentIdx is None:
+        if len(self) < 2:
             return None
+        currentIdx = self.currentIdx
         currentIdx = (currentIdx+1) % len(self)
         self.currentIdx = currentIdx
         return currentIdx
@@ -71,9 +71,9 @@ class ImageList(QObject):
         """Goes back to previous image or loops to last
         if currently on the first image.
         """
-        currentIdx = self.currentIdx
-        if currentIdx is None:
+        if len(self) < 2:
             return None
+        currentIdx = self.currentIdx
         currentIdx -= 1
         if currentIdx < 0:
             currentIdx = len(self)-1
