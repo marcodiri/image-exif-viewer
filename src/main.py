@@ -20,7 +20,6 @@ if __name__ == '__main__':
     if __file__ in sys.argv:
         sys.argv.remove(__file__)
         if len(sys.argv) > 0:
-            for arg in sys.argv:
-                window.addImage(arg)
+            window.addImages(sys.argv)
     window.show()
     app.exec()

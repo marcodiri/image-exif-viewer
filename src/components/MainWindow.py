@@ -1,3 +1,5 @@
+from typing import List
+
 from PyQt5.QtCore import QSize, pyqtSignal
 from PyQt5.QtGui import QKeySequence, QTransform
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QShortcut
@@ -81,19 +83,21 @@ class MainWindow(QMainWindow):
                     self.ui.labelImage.resize(
                         newImgHeight, h-self.imgMarginBottom)
 
-    def addImage(self, path: str):
-        extension = path.split(".")[-1]
-        if extension not in ["jpg", "jpeg", "png", "tiff", "webp"]:
-            raise ValueError("File type not supported")
-        self._images.addImage(Image(path))
+    def addImages(self, paths: List[str]):
+        images = []
+        for path in paths:
+            extension = path.split(".")[-1]
+            if extension not in ["jpg", "jpeg", "png", "tiff", "webp"]:
+                raise ValueError("File type not supported")
+            images.append(Image(path))
+        self._images.addImages(images)
 
     def getImageFiles(self):
         fileNames, _ = QFileDialog.getOpenFileNames(
             self, 'Open Images', r"",
             "Image files (*.jpg *.jpeg *.png *.tiff *.webp)"
         )
-        for file in fileNames:
-            self.addImage(file)
+        self.addImages(fileNames)
 
     def updateUi(self, numImages: int):
         if numImages > 0:

@@ -41,14 +41,15 @@ class ImageList(QObject):
             raise ValueError("Index is out of range")
         return self._images[idx]
 
-    def addImage(self, img: Image):
-        """Add an image to the list.
+    def addImages(self, imgs: List[Image]):
+        """Add images to the list.
 
         Args:
-            img (Image)
+            imgs (Image)
         """
-        self._images.append(img)
-        self.currentIdx = len(self)-1
+        for img in imgs:
+            self._images.append(img)
+        self.currentIdx = len(self)-len(imgs)
         self.imagesChanged.emit(len(self))
 
     def clear(self):
