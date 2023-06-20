@@ -27,28 +27,6 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="navButtonsLayout">
-        <item>
-         <widget class="QPushButton" name="buttonBackward">
-          <property name="text">
-           <string>Previous</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="buttonForward">
-          <property name="text">
-           <string>Next</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
     <item row="0" column="0">
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
@@ -117,6 +95,7 @@
      <string>Image</string>
     </property>
     <addaction name="actionRotate_90"/>
+    <addaction name="actionRotate_m90"/>
     <addaction name="separator"/>
     <addaction name="actionDetails"/>
    </widget>
@@ -141,6 +120,9 @@
    </property>
   </action>
   <action name="actionRotate_90">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Rotate 90°</string>
    </property>
@@ -148,6 +130,11 @@
   <action name="actionDetails">
    <property name="text">
     <string>Details</string>
+   </property>
+  </action>
+  <action name="actionRotate_m90">
+   <property name="text">
+    <string>Rotate -90°</string>
    </property>
   </action>
  </widget>

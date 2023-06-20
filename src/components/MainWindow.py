@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QSize, pyqtSignal
-from PyQt5.QtGui import QTransform
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
+from PyQt5.QtGui import QKeySequence, QTransform
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QShortcut
 
 from components import AboutDialog, DetailsDialog
 from model import Image, ImageList
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self._aboutDialog = aboutDialog
         self._detailsDialog = detailsDialog
-        
+
         self.imgMarginRight = 20
         self._imgMarginBottom = 60
         self.maxImgInitialSize = maxImgInitialSize
@@ -39,21 +39,26 @@ class MainWindow(QMainWindow):
         self.ui.actionDetails.triggered.connect(self.showImageDetails)
         self.ui.actionQuit.triggered.connect(QApplication.exit)
         self.ui.actionOpen.triggered.connect(self.getImageFiles)
-        self.ui.actionRotate_90.triggered.connect(self.rotateImage)
+        self.ui.actionRotate_90.triggered.connect(lambda: self.rotateImage(90))
+        self.ui.actionRotate_m90.triggered.connect(lambda: self.rotateImage(-90))
+        self.resized.connect(self.onResize)
 
-        self.ui.buttonForward.hide()
-        self.ui.buttonBackward.hide()
-        self.ui.buttonForward.clicked.connect(self._images.next)
-        self.ui.buttonBackward.clicked.connect(self._images.prev)
+        # command shortcuts
+        self.ui.actionOpen.setShortcut(QKeySequence("Ctrl+O"))
+        self.ui.actionRotate_90.setShortcut(QKeySequence("R"))
+        self.ui.actionRotate_m90.setShortcut(QKeySequence("Ctrl+R"))
+        QShortcut(QKeySequence("Right"), self).activated.connect(
+            self._images.next)
+        QShortcut(QKeySequence("Left"), self).activated.connect(
+            self._images.prev)
 
         self.ui.statusbar.showMessage("No image opened")
-
-        self.resized.connect(self.onResize)
 
     @property
     def imgMarginBottom(self):
         if len(self._images) > 1:
-            return self._imgMarginBottom + self.ui.navButtonsLayout.sizeHint().height() + 4
+            return self._imgMarginBottom + \
+                self.ui.navButtonsLayout.sizeHint().height() + 4
         return self._imgMarginBottom
 
     @imgMarginBottom.setter
@@ -88,16 +93,15 @@ class MainWindow(QMainWindow):
 
     def getImageFiles(self):
         fileNames, _ = QFileDialog.getOpenFileNames(
-            self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.tiff *.webp)")
+            self, 'Open Images', r"",
+            "Image files (*.jpg *.jpeg *.png *.tiff *.webp)"
+        )
         for file in fileNames:
             self._images.addImage(Image(file))
 
     def updateUi(self, numImages: int):
         if numImages > 0:
             self.ui.menuImage.setEnabled(True)
-        if numImages > 1:
-            self.ui.buttonForward.show()
-            self.ui.buttonBackward.show()
 
     def showImage(self, idx: int):
         pixmap = self._images.getImage(idx).pixmap
@@ -118,18 +122,21 @@ class MainWindow(QMainWindow):
         self.resize(self.ui.labelImage.width()+self.imgMarginRight,
                     self.ui.labelImage.height()+self.imgMarginBottom)
 
-        self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)} - {self._images.getImage(idx).path}")
+        self.ui.statusbar.showMessage(
+            f"{idx+1}/{len(self._images)} - {self._images.getImage(idx).path}")
 
     def showImageDetails(self):
         currentIdx = self._images.currentIdx
-        self._detailsDialog.setDetails(self._images.getImage(currentIdx).metadata)
+        self._detailsDialog.setDetails(
+            self._images.getImage(currentIdx).metadata)
         self._detailsDialog.exec_()
 
-    def rotateImage(self):
+    def rotateImage(self, angle: float):
         currentIdx = self._images.currentIdx
-        currentImage = self._images.getImage(currentIdx)
-        if currentImage.transform is None:
-            currentImage.transform = QTransform().rotate(90)
-        else:
-            currentImage.transform.rotate(90)
-        self.showImage(currentIdx)
+        if currentIdx is not None:
+            currentImage = self._images.getImage(currentIdx)
+            if currentImage.transform is None:
+                currentImage.transform = QTransform().rotate(angle)
+            else:
+                currentImage.transform.rotate(angle)
+            self.showImage(currentIdx)
