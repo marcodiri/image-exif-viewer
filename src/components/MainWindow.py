@@ -1,4 +1,5 @@
 from PyQt5.QtCore import QSize, pyqtSignal
+from PyQt5.QtGui import QTransform
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
 
 from components import AboutDialog, DetailsDialog
@@ -38,6 +39,7 @@ class MainWindow(QMainWindow):
         self.ui.actionDetails.triggered.connect(self.showImageDetails)
         self.ui.actionQuit.triggered.connect(QApplication.exit)
         self.ui.actionOpen.triggered.connect(self.getImageFiles)
+        self.ui.actionRotate_90.triggered.connect(self.rotateImage)
 
         self.ui.buttonForward.hide()
         self.ui.buttonBackward.hide()
@@ -47,7 +49,7 @@ class MainWindow(QMainWindow):
         self.ui.statusbar.showMessage("No image opened")
 
         self.resized.connect(self.onResize)
-    
+
     @property
     def imgMarginBottom(self):
         if len(self._images) > 1:
@@ -89,7 +91,7 @@ class MainWindow(QMainWindow):
             self, 'Open Images', r"", "Image files (*.jpg *.jpeg *.png *.tiff *.webp)")
         for file in fileNames:
             self._images.addImage(Image(file))
-    
+
     def updateUi(self, numImages: int):
         if numImages > 0:
             self.ui.menuImage.setEnabled(True)
@@ -115,12 +117,19 @@ class MainWindow(QMainWindow):
         self.ui.labelImage.setPixmap(pixmap)
         self.resize(self.ui.labelImage.width()+self.imgMarginRight,
                     self.ui.labelImage.height()+self.imgMarginBottom)
-        
+
         self.ui.statusbar.showMessage(f"{idx+1}/{len(self._images)} - {self._images.getImage(idx).path}")
-    
+
     def showImageDetails(self):
         currentIdx = self._images.currentIdx
         self._detailsDialog.setDetails(self._images.getImage(currentIdx).metadata)
-        
         self._detailsDialog.exec_()
-    
+
+    def rotateImage(self):
+        currentIdx = self._images.currentIdx
+        currentImage = self._images.getImage(currentIdx)
+        if currentImage.transform is None:
+            currentImage.transform = QTransform().rotate(90)
+        else:
+            currentImage.transform.rotate(90)
+        self.showImage(currentIdx)
