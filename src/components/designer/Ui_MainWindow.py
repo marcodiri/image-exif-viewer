@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
         self.labelImage = QtWidgets.QLabel(self.frame)
-        self.labelImage.setGeometry(QtCore.QRect(0, 0, 342, 141))
+        self.labelImage.setGeometry(QtCore.QRect(0, 0, 342, 301))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
