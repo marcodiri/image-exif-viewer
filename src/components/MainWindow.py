@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
         self.ui.actionOpen.setShortcut(QKeySequence("Ctrl+O"))
         self.ui.actionRotate_90.setShortcut(QKeySequence("R"))
         self.ui.actionRotate_m90.setShortcut(QKeySequence("Ctrl+R"))
+        self.ui.actionDetails.setShortcut(QKeySequence("D"))
         QShortcut(QKeySequence("Right"), self).activated.connect(
             self._images.next)
         QShortcut(QKeySequence("Left"), self).activated.connect(
