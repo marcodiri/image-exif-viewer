@@ -6,8 +6,7 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QShortcut
 
 from components import AboutDialog, DetailsDialog
 from model import Image, ImageList
-
-from .designer.Ui_MainWindow import Ui_MainWindow
+from view.Ui_MainWindow import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
