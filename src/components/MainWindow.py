@@ -87,7 +87,7 @@ class MainWindow(QMainWindow):
         images = []
         for path in paths:
             extension = path.split(".")[-1]
-            if extension not in ["jpg", "jpeg", "png", "tiff", "webp"]:
+            if extension.lower() not in ["jpg", "jpeg", "png", "tiff", "webp"]:
                 raise ValueError("File type not supported")
             images.append(Image(path))
         self._images.addImages(images)
